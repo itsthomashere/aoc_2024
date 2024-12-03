@@ -18,16 +18,54 @@ pub fn parser_mul(input: &[u8]) -> Vec<Mul> {
 
     let mut result = Vec::new();
 
+    let mut can = true;
+
     while let Some(&val) = peekable.next() {
+        if val == b'd' {
+            can = can_do(&mut peekable);
+        }
         if val == b'm' {
             if let Some(mul) = get_mul(&mut peekable) {
-                result.push(mul);
+                if can {
+                    result.push(mul);
+                }
             }
         }
     }
     println!("result: {result:?}");
 
     result
+}
+
+pub fn can_do(src: &mut Peekable<Iter<u8>>) -> bool {
+    if !matches!(src.next(), Some(&b'o')) {
+        return true;
+    }
+    if let Some(&next) = src.next() {
+        if next == b'(' {
+            if matches!(src.next(), Some(&b')')) {
+                return true;
+            }
+        } else if next == b'n' {
+            if !matches!(src.next(), Some(&b'\'')) {
+                return true;
+            }
+            if !matches!(src.next(), Some(&b't')) {
+                return true;
+            }
+            if !matches!(src.next(), Some(&b'(')) {
+                return true;
+            }
+            match matches!(src.next(), Some(&b')')) {
+                true => return false,
+                false => return true,
+            }
+        } else {
+            return true;
+        }
+    }
+
+    true
 }
 
 pub fn get_mul(src: &mut Peekable<Iter<u8>>) -> Option<Mul> {
