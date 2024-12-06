@@ -15,20 +15,7 @@ fn main() {
     test.parse();
     assert_eq!(test.get_count(), test.parse_multithread());
 
-    let iterations = 10000;
-
-    // Single-threaded timing
-    let mut total_time_st = 0;
-    for _ in 0..iterations {
-        let mut data = Data1::new(data.clone());
-        let now = Instant::now();
-        data.parse();
-        total_time_st += now.elapsed().as_nanos();
-    }
-    println!(
-        "Average single-threaded time: {} ns",
-        total_time_st / iterations
-    );
+    let iterations = 10_000;
 
     // Multi-threaded timing
     let mut total_time_mt = 0;
@@ -41,6 +28,19 @@ fn main() {
     println!(
         "Average multi-threaded time: {} ns",
         total_time_mt / iterations
+    );
+
+    // Single-threaded timing
+    let mut total_time_st = 0;
+    for _ in 0..iterations {
+        let mut data = Data1::new(data.clone());
+        let now = Instant::now();
+        data.parse();
+        total_time_st += now.elapsed().as_nanos();
+    }
+    println!(
+        "Average single-threaded time: {} ns",
+        total_time_st / iterations
     );
 
     println!(
